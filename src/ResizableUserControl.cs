@@ -846,12 +846,13 @@ namespace MetaFrm.RemoteDesktop.Control
                 this.MenuItemTabModeChange.Enabled = true;
                 this.MenuItemScreen.Enabled = true;
                 this.MenuItemSmartSizing.Enabled = true;
-                this.ToolStripMenuItemMovingLock.Enabled = true;
-                this.ToolStripMenuItemResizeLock.Enabled = true;
 
-                this.ToolStripMenuItemVisibleTitle.Enabled = true;
-                this.ToolStripMenuItemVisible_SERVER.Enabled = true;
-                this.ToolStripMenuItemVisible_USER_NAME.Enabled = true;
+                this.ToolStripMenuItemMovingLock.Enabled = !this.SharedStatus.IsTab;
+                this.ToolStripMenuItemResizeLock.Enabled = !this.SharedStatus.IsTab;
+
+                this.ToolStripMenuItemVisibleTitle.Enabled = !this.SharedStatus.IsTab;
+                this.ToolStripMenuItemVisible_SERVER.Enabled = !this.SharedStatus.IsTab;
+                this.ToolStripMenuItemVisible_USER_NAME.Enabled = !this.SharedStatus.IsTab;
             }
 
             this.MenuItemScreen.DropDownItems.Clear();
@@ -899,16 +900,6 @@ namespace MetaFrm.RemoteDesktop.Control
                                     this.Server.IsUseMultimon = false;
                                     this.MenuItemMultimon.Checked = false;
                                     this.Server.ScreenBounds = sc.Bounds;
-
-                                    //foreach (var ctrl in this.ContainerPanel.Controls.OfType<ResizableUserControl>().OrderBy(x => x.CreateID))
-                                    //{
-                                    //    if (!ctrl.Equals(this) && !ctrl.Server.IsConnected && ctrl.Server.ScreenBounds != null
-                                    //     && sc.Bounds.Contains((Rectangle)ctrl.Server.ScreenBounds))//연결 안되어 있고 동일한 디스플레이가 선택 되어 있으면 선택 해제(다중도 해제)
-                                    //    {
-                                    //        ctrl.Server.ScreenBounds = null;
-                                    //        ctrl.Server.IsUseMultimon = false;
-                                    //    }
-                                    //}
                                 }
 
                                 this.Form.Refresh();
@@ -920,17 +911,7 @@ namespace MetaFrm.RemoteDesktop.Control
 
                     this.MenuItemScreen.DropDownItems.Add(toolStripMenu);
 
-                    //foreach (var ctrl in this.ContainerPanel.Controls.OfType<ResizableUserControl>().OrderBy(x => x.CreateID))
-                    //{
-                    //    if (
-                    //        (!ctrl.Equals(this) && ctrl.Server.IsConnected && ctrl.Server.ScreenBounds != null && screen.Bounds.Contains((Rectangle)ctrl.Server.ScreenBounds))//다른 연결에서 설정한 모니터는 선택 불가
-                    //        || (ctrl.Server.IsConnected && ctrl.Server.IsUseMultimon)//연결 되어있고 다중모니터 사용중이면 비활성화
-                    //        )
-                    //    {
-                    //        toolStripMenu.Enabled = false;
-                    //        break;
-                    //    }
-                    //}
+                    toolStripMenu.Enabled = !this.RDP.IsConnected || !this.Server.IsUseMultimon;
                 }
 
                 bool menuItemChecked = false;
