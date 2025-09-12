@@ -13,7 +13,7 @@ env:
 
 jobs:
   build9:
-    runs-on: ubuntu-latest
+    runs-on: windows-2022
     env:
       DLL_PATH: "${{vars.NAMESPACE}}(net9.0)/bin/Release/net9.0/${{vars.NAMESPACE}}.dll" # NET버전
       PROJECT_PATH: "${{vars.NAMESPACE}}(net9.0)" # NET버전
@@ -38,6 +38,11 @@ jobs:
     - name: Install MAUI Workload (Windows)
       if: runner.os == 'Windows'
       run: dotnet workload install maui --ignore-failed-sources
+
+    # - uses: actions/setup-java@v4
+    #   with:
+    #     distribution: 'microsoft'
+    #     java-version: '11'
       
     - name: mkdir temp (Windows)
       if: runner.os == 'Windows'
