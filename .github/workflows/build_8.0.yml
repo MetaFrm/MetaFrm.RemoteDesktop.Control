@@ -15,7 +15,7 @@ jobs:
   build8:
     runs-on: windows-2022
     env:
-      DLL_PATH: "${{vars.NAMESPACE}}(net8.0)/bin/Release/net8.0/${{vars.NAMESPACE}}.dll" # NET버전
+      DLL_PATH: "${{vars.NAMESPACE}}(net8.0)/bin/Release/net8.0-windows/${{vars.NAMESPACE}}.dll" # NET버전
       PROJECT_PATH: "${{vars.NAMESPACE}}(net8.0)" # NET버전
       METAFRM_UPLOADMODULE_URL: "https://download.metafrm.net/github/MetaFrameworkManagementSystemUploadModule8.0.zip" # NET버전
       METAFRM_UPLOADMODULE_ZIP: "temp/MetaFrameworkManagementSystemUploadModule8.0.zip" # NET버전
