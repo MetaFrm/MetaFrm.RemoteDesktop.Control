@@ -464,6 +464,8 @@ namespace MetaFrm.RemoteDesktop.Control
                 {
                     tool.Checked = this.SharedStatus.Visible_SERVER;
                     this.Form.Refresh();
+
+                    this.Server.DoAction(this.Server, new() { Action = "StateHasChanged", Value = null });
                 }
             };
             this.ToolStripMenuItemVisible_USER_NAME.Click += (s, e) =>
@@ -473,6 +475,8 @@ namespace MetaFrm.RemoteDesktop.Control
                 {
                     tool.Checked = this.SharedStatus.Visible_USER_NAME;
                     this.Form.Refresh();
+
+                    this.Server.DoAction(this.Server, new() { Action = "StateHasChanged", Value = null });
                 }
             };
         }
@@ -1223,7 +1227,7 @@ namespace MetaFrm.RemoteDesktop.Control
             this.Server.IsConnected = true;
             this.Server.DoAction(this.Server, new() { Action = "Status", Value = this.Server.Status });
 
-            this.RDP.ConnectionBarText = $"{this.Server.SERVER} : {this.Server.ConnectedStartTime:MM-dd HH:mm:ss}";
+            this.RDP.ConnectionBarText = $"{(this.SharedStatus.Visible_SERVER ? this.Server.SERVER : new('*', this.Server.SERVER.Length))} / {(this.SharedStatus.Visible_USER_NAME ? this.Server.USER_NAME : new('*', this.Server.USER_NAME.Length))} / {this.Server.ConnectedStartTime:MM-dd HH:mm:ss}";
         }
         private void OnDisconnected(object sender, AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEvent e)
         {
