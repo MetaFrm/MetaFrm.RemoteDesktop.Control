@@ -1157,13 +1157,12 @@ namespace MetaFrm.RemoteDesktop.Control
                 rectangle = Dpi.GetTotalScreenBounds();
 
                 this.SharedStatus.FormOrgFormWindowState = (int)this.Form.WindowState;
+                this.SharedStatus.FormOrgLocation = this.Form.Location;
+                this.SharedStatus.FormOrgSize = this.Form.Size;
 
                 this.Form.WindowState = FormWindowState.Maximized;
                 this.Form.FormBorderStyle = FormBorderStyle.None;
                 this.Form.WindowState = FormWindowState.Normal;
-
-                this.SharedStatus.FormOrgLocation = this.Form.Location;
-                this.SharedStatus.FormOrgSize = this.Form.Size;
 
                 this.Form.Location = new Point(rectangle.X, rectangle.Y);
                 this.Form.Size = new Size(rectangle.Width, rectangle.Height + (this.SharedStatus.IsTitleVisible ? this.SharedStatus.TitleHeightConst : 0));
@@ -1180,7 +1179,7 @@ namespace MetaFrm.RemoteDesktop.Control
                 this.ContainerPanel.AutoScroll = false;
 
                 this.Location = new Point(0, 0);
-                this.Size = new Size(this.RDP.DesktopWidth, this.RDP.DesktopHeight + (this.SharedStatus.IsTitleVisible ? this.SharedStatus.TitleHeightConst : 0));
+                this.Size = new(this.RDP.DesktopWidth, this.RDP.DesktopHeight + (this.SharedStatus.IsTitleVisible ? this.SharedStatus.TitleHeightConst : 0));
             }
             else
             {
@@ -1196,11 +1195,6 @@ namespace MetaFrm.RemoteDesktop.Control
 
             this.IsGoFullScreenSaveFormWindowStateLocation = false;
 
-            this.SharedStatus.IsTitleVisible = true;
-
-            foreach (var ctrl in this.ContainerPanel.Controls.OfType<ResizableUserControl>().OrderBy(x => x.CreateID))
-                ctrl.SetTitleHeight();
-
             this.BringToFront();
 
             this.Refresh();
@@ -1212,16 +1206,24 @@ namespace MetaFrm.RemoteDesktop.Control
             if (this.Server.IsUseMultimon)
             {
                 this.Form.WindowState = FormWindowState.Normal;
-                this.Form.Location = SharedStatus.FormOrgLocation;
-                this.Form.Size = SharedStatus.FormOrgSize;
-
                 this.Form.FormBorderStyle = FormBorderStyle.Sizable;
-                this.Form.WindowState = (FormWindowState)SharedStatus.FormOrgFormWindowState;
+
+                this.Form.Location = this.SharedStatus.FormOrgLocation;
+                this.Form.Size = this.SharedStatus.FormOrgSize;
+                this.Form.WindowState = (FormWindowState)this.SharedStatus.FormOrgFormWindowState;
 
                 this.Form.TopMost = false;
 
                 if (this.SharedStatus.IsTab)
                     this.TopControl.Visible = true;
+
+                if (!this.SharedStatus.IsTab)
+                {
+                    this.SharedStatus.IsTitleVisible = true;
+
+                    foreach (var ctrl in this.ContainerPanel.Controls.OfType<ResizableUserControl>().OrderBy(x => x.CreateID))
+                        ctrl.SetTitleHeight();
+                }
 
                 this.BottomControl.Visible = true;
 
