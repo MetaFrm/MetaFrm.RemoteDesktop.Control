@@ -1190,6 +1190,18 @@ namespace MetaFrm.RemoteDesktop.Control
 
             this.IsGoFullScreenSaveFormWindowStateLocation = false;
 
+            this.Visible = false;
+            if (this.Tag != null && this.Tag is Button button1)
+                button1.Visible = false;
+
+            var ctrl = this.ContainerPanel.Controls.OfType<ResizableUserControl>().Where(y => !y.Equals(this)).OrderBy(x => x.CreateID).FirstOrDefault();
+            if (ctrl != null)
+            {
+                this.SetActiveControl(ctrl);
+                if (ctrl.Tag != null && ctrl.Tag is Button button2)
+                    this.ButtonBefore[0] = button2;
+            }
+
             this.BringToFront();
 
             this.Refresh();
@@ -1226,6 +1238,12 @@ namespace MetaFrm.RemoteDesktop.Control
 
                 this.SetLocationSize();
             }
+
+            this.Visible = true;
+            if (this.Tag != null && this.Tag is Button button)
+                button.Visible = true;
+
+            this.RDP_GotFocus(this, new());
 
             this.Refresh();
         }
