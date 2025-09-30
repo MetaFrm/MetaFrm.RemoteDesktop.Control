@@ -182,11 +182,12 @@ namespace MetaFrm.RemoteDesktop.Control
             this.MenuItemScreen.DropDownItems.Add(this.MenuItemMultimon);
 
             this.MenuItemSmartSizing = new("스마트사이징");
-            this.MenuItemSetupDesktopSizeToDesktopSize = new("설정해상도->원격해상도");
-            this.MenuItemSetupViewSizeToDesktopSize = new("설정뷰크기->원격해상도");
-            this.MenuItemViewSizeToDesktopSize = new("뷰크기->원격해상도");
-            this.MenuItemDesktopSizeToViewSize = new("원격해상도->뷰크기");
-            this.MenuItemSetupViewSizeToViewSize = new("설정뷰크기->뷰크기");
+            this.MenuItemSetupDesktopSizeToDesktopSize = new("원격해상도<-설정해상도");
+            this.MenuItemSetupViewSizeToDesktopSize = new("원격해상도<-설정뷰크기");
+            this.MenuItemViewSizeToDesktopSize = new("원격해상도<-뷰크기");
+
+            this.MenuItemDesktopSizeToViewSize = new("뷰크기<-원격해상도");
+            this.MenuItemSetupViewSizeToViewSize = new("뷰크기<-설정뷰크기");
 
             this.MenuItemViewSize = new("뷰 크기");
             if (this.ContainerPanel.Width >= 100 && this.ContainerPanel.Height >= 100)
@@ -733,8 +734,9 @@ namespace MetaFrm.RemoteDesktop.Control
                 } 서버이름:{this.Server.SERVER_NAME}"
                 , this.Font, titleRect1, Color.White, TextFormatFlags.Top | TextFormatFlags.Left);
             TextRenderer.DrawText(e.Graphics
-                , $"    원격해상도:{this.RDP.DesktopWidth}x{this.RDP.DesktopHeight}(설정해상도:{this.Server.DESKTOP_WIDTH}x{this.Server.DESKTOP_HEIGHT
-                })  뷰크기:{this.Width}x{this.Height - (this.SharedStatus.IsTitleVisible ? this.SharedStatus.TitleHeightConst : 0)}(설정뷰크기:{this.Server.CONTROL_WIDTH}x{this.Server.CONTROL_HEIGHT
+                , $"    원격해상도:{(this.Server.DESKTOP_WIDTH == 0 && this.Server.DESKTOP_HEIGHT == 0 ? $"Current View" : $"{this.RDP.DesktopWidth}x{this.RDP.DesktopHeight}")
+                }{(this.Server.DESKTOP_WIDTH == 0 && this.Server.DESKTOP_HEIGHT == 0 ? $"" : $"(설정해상도:{this.Server.DESKTOP_WIDTH}x{this.Server.DESKTOP_HEIGHT})")
+                }  뷰크기:{this.Width}x{this.Height - (this.SharedStatus.IsTitleVisible ? this.SharedStatus.TitleHeightConst : 0)}(설정뷰크기:{this.Server.CONTROL_WIDTH}x{this.Server.CONTROL_HEIGHT
                 })  {(this.Server.IsFullScreen ? "전체화면 " : "")
                 }{(this.Server.IsUseMultimon ? "다중모니터 " : (this.Server.ScreenBounds != null && Screen.AllScreens.Length > 1)
                                                                 ? $"{Screen.AllScreens.SingleOrDefault(x => this.Server.ScreenBounds.Equals(x.Bounds))?.DeviceName.Replace(".", "").Replace("\\", "")} " : "")
@@ -819,6 +821,14 @@ namespace MetaFrm.RemoteDesktop.Control
                 this.MenuItemSetupViewSizeToDesktopSize.Enabled = true;
                 this.MenuItemViewSizeToDesktopSize.Enabled = true;
                 this.MenuItemDesktopSize.Enabled = true;
+
+                if (this.Server.DESKTOP_WIDTH == 0 && this.Server.DESKTOP_HEIGHT == 0)
+                {
+                    this.MenuItemSetupDesktopSizeToDesktopSize.Enabled = false;
+                    this.MenuItemSetupViewSizeToDesktopSize.Enabled = false;
+                    this.MenuItemViewSizeToDesktopSize.Enabled = false;
+                    this.MenuItemDesktopSize.Enabled = false;
+                }
             }
 
             this.MenuItemDesktopSizeToViewSize.Enabled = !this.SharedStatus.IsTab;
@@ -1324,7 +1334,7 @@ namespace MetaFrm.RemoteDesktop.Control
                         foreach (var screen in Screen.AllScreens)
                         {
                             if (this.Server.ScreenBounds.Equals(screen.Bounds))
-                            { 
+                            {
                                 size = screen.Bounds.Size;
                                 break;
                             }
@@ -1341,6 +1351,14 @@ namespace MetaFrm.RemoteDesktop.Control
                 }
 
                 this.RDP.GoFullScreen();
+            }
+            else
+            {
+                if (this.Server.DESKTOP_WIDTH == 0 && this.Server.DESKTOP_HEIGHT == 0)
+                {
+                    this.RDP.DesktopWidth = this.Width;
+                    this.RDP.DesktopHeight = this.Height - (this.SharedStatus.IsTab ? 0 : (this.SharedStatus.IsTitleVisible ? this.SharedStatus.TitleHeightConst : 0));
+                }
             }
 
             this.RDP.Dock = DockStyle.Fill;
