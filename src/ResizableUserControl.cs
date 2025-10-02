@@ -1181,10 +1181,13 @@ namespace MetaFrm.RemoteDesktop.Control
                 //전체 화면 전환하기 전에 윈도우 상태를 저장했으면
                 if (this.Server.ScreenBounds != null && this.IsGoFullScreenSaveFormWindowStateLocation)
                 {
-                    await Task.Delay(700); // 0.7초 딜레이
+                    await Task.Delay(300); // 0.3초 딜레이
 
-                    this.Form.Location = this.SharedStatus.FormOrgLocation;
-                    this.Form.WindowState = (FormWindowState)this.SharedStatus.FormOrgFormWindowState;
+                    if (!this.Server.ScreenBounds.Equals(this.SharedStatus.FormOrgBounds))
+                    {
+                        this.Form.Location = this.SharedStatus.FormOrgLocation;
+                        this.Form.WindowState = (FormWindowState)this.SharedStatus.FormOrgFormWindowState;
+                    }
                 }
             }
 
@@ -1197,7 +1200,9 @@ namespace MetaFrm.RemoteDesktop.Control
             var ctrl = this.ContainerPanel.Controls.OfType<ResizableUserControl>().Where(y => !y.Equals(this)).OrderBy(x => x.CreateID).FirstOrDefault();
             if (ctrl != null)
             {
-                this.SetActiveControl(ctrl);
+                if (!this.Server.ScreenBounds.Equals(Screen.FromControl(this.Form).Bounds))
+                    this.SetActiveControl(ctrl);
+
                 if (ctrl.Tag != null && ctrl.Tag is Button button2)
                     this.ButtonBefore[0] = button2;
             }
@@ -1402,10 +1407,14 @@ namespace MetaFrm.RemoteDesktop.Control
             {
                 this.IsGoFullScreenSaveFormWindowStateLocation = true;
                 this.SharedStatus.FormOrgFormWindowState = (int)this.Form.WindowState;
-                this.Form.WindowState = FormWindowState.Normal;
-                this.SharedStatus.FormOrgLocation = new(this.Form.Location.X, this.Form.Location.Y);
+                this.SharedStatus.FormOrgBounds = Screen.FromControl(this.Form).Bounds;
 
-                this.Form.Location = new(((Rectangle)this.Server.ScreenBounds).X, ((Rectangle)this.Server.ScreenBounds).Y);
+                if (!this.Server.ScreenBounds.Equals(this.SharedStatus.FormOrgBounds))
+                {
+                    this.Form.WindowState = FormWindowState.Normal;
+                    this.SharedStatus.FormOrgLocation = new(this.Form.Location.X, this.Form.Location.Y);
+                    this.Form.Location = new(((Rectangle)this.Server.ScreenBounds).X, ((Rectangle)this.Server.ScreenBounds).Y);
+                }
             }
         }
     }
