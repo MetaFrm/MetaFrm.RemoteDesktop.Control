@@ -929,7 +929,7 @@ namespace MetaFrm.RemoteDesktop.Control
                 }
 
                 bool menuItemChecked = false;
-                foreach(var item in this.MenuItemScreen.DropDownItems)
+                foreach (var item in this.MenuItemScreen.DropDownItems)
                 {
                     if (item is ToolStripMenuItem menuItem && menuItem.Tag != null && menuItem.Tag is Screen screen)
                     {
@@ -943,6 +943,13 @@ namespace MetaFrm.RemoteDesktop.Control
                 }
                 if (!menuItemChecked)
                     this.Server.ScreenBounds = null;
+            }
+            else
+            {
+                this.MenuItemMultimon.Enabled = false;
+
+                if (this.Server.IsUseMultimon)
+                    this.MenuItemMultimon_Click(this.MenuItemMultimon, new());
             }
 
             this.MenuItemSetupDesktopSizeToDesktopSize.Checked = this.RDP.DesktopWidth == this.Server.DESKTOP_WIDTH && this.RDP.DesktopHeight == this.Server.DESKTOP_HEIGHT;
@@ -1183,7 +1190,7 @@ namespace MetaFrm.RemoteDesktop.Control
                 {
                     await Task.Delay(300); // 0.3초 딜레이
 
-                    if (!this.Server.ScreenBounds.Equals(this.SharedStatus.FormOrgBounds))
+                    if (!this.Server.ScreenBounds.Equals(this.SharedStatus.FormOrgBounds) && Screen.AllScreens.Length > 1)
                     {
                         this.Form.Location = this.SharedStatus.FormOrgLocation;
                         this.Form.WindowState = (FormWindowState)this.SharedStatus.FormOrgFormWindowState;
@@ -1409,7 +1416,7 @@ namespace MetaFrm.RemoteDesktop.Control
                 this.SharedStatus.FormOrgFormWindowState = (int)this.Form.WindowState;
                 this.SharedStatus.FormOrgBounds = Screen.FromControl(this.Form).Bounds;
 
-                if (!this.Server.ScreenBounds.Equals(this.SharedStatus.FormOrgBounds))
+                if (!this.Server.ScreenBounds.Equals(this.SharedStatus.FormOrgBounds) && Screen.AllScreens.Length > 1)
                 {
                     this.Form.WindowState = FormWindowState.Normal;
                     this.SharedStatus.FormOrgLocation = new(this.Form.Location.X, this.Form.Location.Y);
