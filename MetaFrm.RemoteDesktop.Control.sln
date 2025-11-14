@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.6.33829.357
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{61D45DB5-C68B-49FD-A0D8-B134EB62701E}"
 	ProjectSection(SolutionItems) = preProject
@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{EFA3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{D278E1B4-119A-4C54-9F1D-23BAACAEAB25}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build_10.0.yml = .github\workflows\build_10.0.yml
 		.github\workflows\build_8.0.yml = .github\workflows\build_8.0.yml
 		.github\workflows\build_9.0.yml = .github\workflows\build_9.0.yml
 	EndProjectSection
@@ -31,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaFrm.RemoteDesktop.Contr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaFrm.RemoteDesktop.Control(net9.0)", "MetaFrm.RemoteDesktop.Control(net9.0)\MetaFrm.RemoteDesktop.Control(net9.0).csproj", "{0FF845DD-6CD0-9D16-6FBB-760A4D95A788}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaFrm.RemoteDesktop.Control(net10.0)", "MetaFrm.RemoteDesktop.Control(net10.0)\MetaFrm.RemoteDesktop.Control(net10.0).csproj", "{174C069C-09DE-A045-155F-3AC37B2BFCAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +48,10 @@ Global
 		{0FF845DD-6CD0-9D16-6FBB-760A4D95A788}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FF845DD-6CD0-9D16-6FBB-760A4D95A788}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FF845DD-6CD0-9D16-6FBB-760A4D95A788}.Release|Any CPU.Build.0 = Release|Any CPU
+		{174C069C-09DE-A045-155F-3AC37B2BFCAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{174C069C-09DE-A045-155F-3AC37B2BFCAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{174C069C-09DE-A045-155F-3AC37B2BFCAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{174C069C-09DE-A045-155F-3AC37B2BFCAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
