@@ -47,6 +47,9 @@ jobs:
     - name: mkdir temp (Windows)
       if: runner.os == 'Windows'
       run: mkdir -p temp
+      
+    - name: mkdir TestResults
+      run: mkdir -p "${{ env.PROJECT_PATH }}/TestResults"
 
 
     - name: Download Upload Module
