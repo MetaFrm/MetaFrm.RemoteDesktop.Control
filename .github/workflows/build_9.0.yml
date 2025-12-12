@@ -80,31 +80,45 @@ jobs:
 
     - name: Build Debug
       id: ST2
-      run: dotnet build "${{env.PROJECT_PATH}}" -c Debug --no-restore
+      run: dotnet build "${{env.PROJECT_PATH}}" -c Debug --no-restore -v minimal
     - name: if failure
       if: ${{ failure() && steps.ST1.outcome != 'failure' }}
       run: dotnet "${{env.METAFRM_UPLOADMODULE_FILE}}" "${{secrets.METAFRM_UPLOADMODULE_ACCESSKEY}}" "${{github.event.pusher.email}}^${{env.PASSWORD}}" "notification" "Build Debug Fail !!" "${{env.DLL_PATH}}" "${{vars.NAMESPACE}}"
 
     - name: Test Debug
       id: ST3
-      run: dotnet test "${{env.PROJECT_PATH}}" -c Debug --no-build --verbosity normal
+      run: dotnet test "${{env.PROJECT_PATH}}" -c Debug --no-build --logger "trx;LogFileName=test-debug.trx"
     - name: if failure
       if: ${{ failure() && steps.ST1.outcome != 'failure' && steps.ST2.outcome != 'failure' }}
       run: dotnet "${{env.METAFRM_UPLOADMODULE_FILE}}" "${{secrets.METAFRM_UPLOADMODULE_ACCESSKEY}}" "${{github.event.pusher.email}}^${{env.PASSWORD}}" "notification" "Test Debug Fail !!" "${{env.DLL_PATH}}" "${{vars.NAMESPACE}}"
 
+    - name: Upload test results (Debug)
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: test-results-debug
+        path: ${{ env.PROJECT_PATH }}/TestResults/test-debug.trx
+
     - name: Build Release
       id: ST4
-      run: dotnet build "${{env.PROJECT_PATH}}" -c Release --no-restore
+      run: dotnet build "${{env.PROJECT_PATH}}" -c Release --no-restore -v minimal
     - name: if failure
       if: ${{ failure() && steps.ST1.outcome != 'failure' && steps.ST2.outcome != 'failure' && steps.ST3.outcome != 'failure' }}
       run: dotnet "${{env.METAFRM_UPLOADMODULE_FILE}}" "${{secrets.METAFRM_UPLOADMODULE_ACCESSKEY}}" "${{github.event.pusher.email}}^${{env.PASSWORD}}" "notification" "Build Release Fail !!" "${{env.DLL_PATH}}" "${{vars.NAMESPACE}}"
       
     - name: Test Release
       id: ST5
-      run: dotnet test "${{env.PROJECT_PATH}}" -c Release --no-build --verbosity normal
+      run: dotnet test "${{env.PROJECT_PATH}}" -c Release --no-build --logger "trx;LogFileName=test-release.trx"
     - name: if failure
       if: ${{ failure() && steps.ST1.outcome != 'failure' && steps.ST2.outcome != 'failure' && steps.ST3.outcome != 'failure' && steps.ST4.outcome != 'failure' }}
       run: dotnet "${{env.METAFRM_UPLOADMODULE_FILE}}" "${{secrets.METAFRM_UPLOADMODULE_ACCESSKEY}}" "${{github.event.pusher.email}}^${{env.PASSWORD}}" "notification" "Test Release Fail !!" "${{env.DLL_PATH}}" "${{vars.NAMESPACE}}"
+
+    - name: Upload test results (Release)
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: test-results-release
+        path: ${{ env.PROJECT_PATH }}/TestResults/test-release.trx
       
 
     - name: Upload Module
@@ -119,10 +133,17 @@ jobs:
     - name: Pack nugets
       id: ST7
       if: env.PUSH_NUGET == 'Y'
-      run: dotnet pack "${{env.PROJECT_PATH}}"  -c Release --no-build --output .
+      run: dotnet pack "${{env.PROJECT_PATH}}" -c Release --no-build -o ./nupkgs
     - name: if failure
       if: ${{ failure() && steps.ST1.outcome != 'failure' && steps.ST2.outcome != 'failure' && steps.ST3.outcome != 'failure' && steps.ST4.outcome != 'failure' && steps.ST5.outcome != 'failure' && steps.ST6.outcome != 'failure' }}
       run: dotnet "${{env.METAFRM_UPLOADMODULE_FILE}}" "${{secrets.METAFRM_UPLOADMODULE_ACCESSKEY}}" "${{github.event.pusher.email}}^${{env.PASSWORD}}" "notification" "Pack nugets Fail !!" "${{env.DLL_PATH}}" "${{vars.NAMESPACE}}"
+
+    - name: Upload nupkgs artifact
+      if: env.PUSH_NUGET == 'Y'
+      uses: actions/upload-artifact@v5
+      with:
+        name: nupkgs
+        path: ${{ env.PROJECT_PATH }}/nupkgs/*.nupkg
       
     - name: Push to NuGet
       id: ST8
