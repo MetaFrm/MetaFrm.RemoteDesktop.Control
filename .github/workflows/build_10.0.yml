@@ -23,12 +23,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-  
-    - name: Run a command that might fail
-      id: run-tool
-      # Redirect both stdout and stderr to a file, while also displaying in the console
-      run: some_tool_command 2>&1 | tee output.log
-      shell: bash
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
@@ -127,12 +121,10 @@ jobs:
     - name: Push to NuGet
       id: ST8
       if: env.PUSH_NUGET == 'Y'
-      run: dotnet nuget push "${{env.PROJECT_PATH}}/bin/Release/*.nupkg" --api-key ${{secrets.NUGET_AUTH_TOKEN}} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push "*.nupkg" --api-key ${{secrets.NUGET_AUTH_TOKEN}} --source https://api.nuget.org/v3/index.json
     - name: if failure
       if: ${{ failure() && steps.ST1.outcome != 'failure' && steps.ST2.outcome != 'failure' && steps.ST3.outcome != 'failure' && steps.ST4.outcome != 'failure' && steps.ST5.outcome != 'failure' && steps.ST6.outcome != 'failure' && steps.ST7.outcome != 'failure' }}
-      run: |
-        FAILURE_MESSAGE=$(cat output.log)
-        dotnet "${{env.METAFRM_UPLOADMODULE_FILE}}" "${{secrets.METAFRM_UPLOADMODULE_ACCESSKEY}}" "${{github.event.pusher.email}}^${{env.PASSWORD}}" "notification" "$FAILURE_MESSAGE" "${{env.DLL_PATH}}" "${{vars.NAMESPACE}}"
+      run: dotnet "${{env.METAFRM_UPLOADMODULE_FILE}}" "${{secrets.METAFRM_UPLOADMODULE_ACCESSKEY}}" "${{github.event.pusher.email}}^${{env.PASSWORD}}" "notification" "Push to NuGet Fail !!" "${{env.DLL_PATH}}" "${{vars.NAMESPACE}}"
       
 
     - name: Completed
