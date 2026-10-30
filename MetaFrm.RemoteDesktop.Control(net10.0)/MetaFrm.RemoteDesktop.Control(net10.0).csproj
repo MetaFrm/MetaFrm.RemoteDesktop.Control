@@ -6,9 +6,9 @@
     <Nullable>enable</Nullable>
     <AssemblyName>MetaFrm.RemoteDesktop.Control</AssemblyName>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>MetaFrm.RemoteDesktop.Control.net10.0</PackageId>
-    <Version>10.0.13.0</Version>
+    <Version>10.0.14.0</Version>
     <Authors>dsun</Authors>
     <Company>Meta Framework</Company>
     <Copyright>Copyright 2026. dsun all rights reserved.</Copyright>
@@ -40,9 +40,9 @@
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AxMSTSCLib" Version="1.0.1" />
-    <PackageReference Include="MetaFrm.Core.net10.0" Version="10.0.13" />
-    <PackageReference Include="MetaFrm.RemoteDesktop.Core.net10.0" Version="10.0.13" />
+    <PackageReference Include="AxMSTSCLib" Version="1.0.*" />
+    <PackageReference Include="MetaFrm.Core.net10.0" Version="10.0.*" />
+    <PackageReference Include="MetaFrm.RemoteDesktop.Core.net10.0" Version="10.0.*" />
   </ItemGroup>
   <ItemGroup>
     <None Include="icon.png">
